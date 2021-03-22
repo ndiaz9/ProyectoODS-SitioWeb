@@ -50,11 +50,11 @@ const InnerContent = (props) => {
           <div className={classes.graphContainer}>
             <ResponsiveHeatMap
               data={props.data}
-              keys={commons.months}
+              keys={commons.hours}
               indexBy="year"
               margin={{ top: 0, right: 5, bottom: 40, left: 40 }}
               forceSquare={false}
-              colors="GnBu"
+              colors="greens"
               axisBottom={{
                 orient: "top",
                 tickSize: 5,
@@ -71,9 +71,12 @@ const InnerContent = (props) => {
                 tickPadding: 5,
                 tickRotation: 0,
               }}
-              cellOpacity={1}
+              cellOpacity={0.85}
               cellBorderColor={{ from: "color", modifiers: [["darker", 0.4]] }}
-              labelTextColor={{ from: "color", modifiers: [["darker", 1.8]] }}
+              theme={{
+                textColor: "#000000",
+                fontSize: 9,
+              }}
               defs={[
                 {
                   id: "lines",
@@ -86,7 +89,6 @@ const InnerContent = (props) => {
                 },
               ]}
               fill={[{ id: "lines" }]}
-              hoverTarget="cell"
               cellHoverOthersOpacity={0.25}
             />
           </div>
@@ -96,7 +98,7 @@ const InnerContent = (props) => {
   }
 };
 
-const MonthlyGraph = (props) => {
+const YearlyByHourGraph = (props) => {
   const coord = props.coord;
   const variable = props.variable;
 
@@ -111,7 +113,7 @@ const MonthlyGraph = (props) => {
       var requests = [];
       commons.years.forEach((year) => {
         const req = axios.get(
-          commons.backendURL + "/api/m/" + year + "/" + getLat + "+" + getLon
+          commons.backendURL + "/api/h/" + year + "/" + getLat + "+" + getLon
         );
         requests.push(req);
       });
@@ -132,7 +134,7 @@ const MonthlyGraph = (props) => {
               };
               responses[index].data[0][variable].forEach(
                 (variableData, variableIndex) => {
-                  yearData[commons.months[variableIndex]] = commons.round2(
+                  yearData[commons.hours[variableIndex]] = commons.round2(
                     variableData
                   );
                 }
@@ -149,4 +151,4 @@ const MonthlyGraph = (props) => {
   return <InnerContent coord={coord} variable={variable} data={data} />;
 };
 
-export default MonthlyGraph;
+export default YearlyByHourGraph;

@@ -4,13 +4,14 @@ var cors = require("cors");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
+var helmet = require("helmet");
 
 var indexRouter = require("./routes/index");
-var monthlyDataRouter = require("./routes/monthlyData");
-var yearlyDataRouter = require("./routes/yearlyData");
+var dataRouter = require("./routes/getData");
 
 var app = express();
-
+const port = process.env.PORT || 3001;
+const publicPath = path.join(__dirname, "../nsrdb-website/build");
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
@@ -19,7 +20,8 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, "../nsrdb-website/build")));
+app.use(express.static(publicPath));
+app.use(helmet());
 
 app.use(
   cors({
@@ -28,8 +30,7 @@ app.use(
 );
 
 app.use("/", indexRouter);
-app.use("/m", monthlyDataRouter);
-app.use("/y", yearlyDataRouter);
+app.use("/api", dataRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -45,6 +46,14 @@ app.use(function (err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   res.render("error");
+});
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(publicPath, "index.html"));
+});
+
+app.listen(port, () => {
+  console.log("Server is up on port " + port);
 });
 
 module.exports = app;

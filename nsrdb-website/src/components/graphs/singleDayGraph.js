@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { makeStyles } from "@material-ui/core/styles";
 import { Typography, Grid, CircularProgress } from "@material-ui/core";
-import { ResponsiveLine } from "@nivo/line";
+import { ResponsiveBar } from "@nivo/bar";
 import commons from "../../commons";
 
 const useStyles = makeStyles((theme) => ({
@@ -38,12 +38,6 @@ const InnerContent = (props) => {
       </Grid>
     );
   } else {
-    const graphData = [
-      {
-        id: props.variable,
-        data: props.data,
-      },
-    ];
     return (
       <Grid container direction="column">
         <Grid item>
@@ -54,46 +48,38 @@ const InnerContent = (props) => {
             </Typography>
           </Grid>
           <div className={classes.graphContainer}>
-            <ResponsiveLine
-              data={graphData}
+            <ResponsiveBar
+              data={props.data}
+              keys={["Variable"]}
+              indexBy="hour"
               margin={{ top: 10, right: 10, bottom: 80, left: 50 }}
-              colors={{ scheme: "category10" }}
-              xScale={{ type: "point" }}
-              yScale={{
-                type: "linear",
-                min: "auto",
-                max: "auto",
-                stacked: true,
-                reverse: false,
-              }}
-              yFormat=" >-.2f"
+              padding={0.3}
+              valueScale={{ type: "linear", round: true }}
+              indexScale={{ type: "band", round: true }}
+              colors={{ scheme: "dark2" }}
+              enableLabel={true}
+              isInteractive={true}
               axisTop={null}
               axisRight={null}
-              enablePointLabel={true}
               axisBottom={{
                 orient: "bottom",
                 tickSize: 5,
                 tickPadding: 5,
                 tickRotation: 90,
-                legend: "Año",
+                legend: "Hora",
                 legendOffset: 50,
                 legendPosition: "middle",
               }}
               axisLeft={{
-                orient: "left",
                 tickSize: 5,
                 tickPadding: 5,
                 tickRotation: 0,
                 legend: "",
-                legendOffset: -40,
                 legendPosition: "middle",
+                legendOffset: -40,
               }}
-              pointSize={10}
-              pointColor={{ theme: "background" }}
-              pointBorderWidth={2}
-              pointBorderColor={{ from: "serieColor" }}
-              pointLabelYOffset={-12}
-              useMesh={true}
+              labelSkipWidth={12}
+              labelSkipHeight={12}
             />
           </div>
         </Grid>
@@ -102,7 +88,7 @@ const InnerContent = (props) => {
   }
 };
 
-const SingleYearGraph = (props) => {
+const SingleDayGraph = (props) => {
   const coord = props.coord;
   const variable = props.variable;
   const year = props.year;
@@ -117,15 +103,15 @@ const SingleYearGraph = (props) => {
 
       axios
         .get(
-          commons.backendURL + "/api/m/" + year + "/" + getLat + "+" + getLon
+          commons.backendURL + "/api/h/" + year + "/" + getLat + "+" + getLon
         )
         .then((result) => {
           if (result.status === 200) {
             var newData = [];
-            result.data[0][variable].forEach((monthData, index) => {
+            result.data[0][variable].forEach((hourData, index) => {
               newData.push({
-                x: commons.months[index],
-                y: commons.round2(monthData),
+                hour: commons.hours[index],
+                Variable: commons.round2(hourData),
               });
             });
             setData(newData);
@@ -139,4 +125,4 @@ const SingleYearGraph = (props) => {
   );
 };
 
-export default SingleYearGraph;
+export default SingleDayGraph;

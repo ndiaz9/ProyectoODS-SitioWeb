@@ -107,13 +107,13 @@ const InnerContent = (props) => {
     );
   } else {
     var graphData = [];
-    props.monthlyData.map((data) =>
+    for (var i = 0; i < 12; i++) {
       graphData.push({
-        month: commons.months[data.month - 1],
-        DHI: commons.round2(data.DHI),
-        DNI: commons.round2(data.DNI),
-      })
-    );
+        month: commons.months[i],
+        DHI: commons.round2(props.monthlyData.DHI[i]),
+        DNI: commons.round2(props.monthlyData.DNI[i]),
+      });
+    }
     return (
       <Grid container direction="column">
         <Grid item>
@@ -128,7 +128,7 @@ const InnerContent = (props) => {
                 name="latitude"
                 selected={props.variable}
                 title="Latitud"
-                value={commons.round2(props.yearlyData[0].latitude) + "°"}
+                value={commons.round2(props.yearlyData.latitude) + "°"}
               />
             </Grid>
             <Grid item xs={4}>
@@ -136,7 +136,7 @@ const InnerContent = (props) => {
                 name="longitude"
                 selected={props.variable}
                 title="Longitud"
-                value={commons.round2(props.yearlyData[0].longitude) + "°"}
+                value={commons.round2(props.yearlyData.longitude) + "°"}
               />
             </Grid>
             <Grid item xs={4}>
@@ -144,7 +144,7 @@ const InnerContent = (props) => {
                 name="elevation"
                 selected={props.variable}
                 title="Elevación"
-                value={commons.round2(props.yearlyData[0].elevation) + " msnm"}
+                value={commons.round2(props.elevation.elevation) + " msnm"}
               />
             </Grid>
           </Grid>
@@ -166,7 +166,7 @@ const InnerContent = (props) => {
                 name="GHI"
                 selected={props.variable}
                 title="Global Horizontal"
-                value={commons.round2(props.yearlyData[0].GHI) + " w/m2"}
+                value={commons.round2(props.yearlyData.GHI) + " w/m2"}
               />
             </Grid>
             <Grid item xs={4}>
@@ -174,7 +174,7 @@ const InnerContent = (props) => {
                 name="DHI"
                 selected={props.variable}
                 title="Difusa Horizontal"
-                value={commons.round2(props.yearlyData[0].DHI) + " w/m2"}
+                value={commons.round2(props.yearlyData.DHI) + " w/m2"}
               />
             </Grid>
             <Grid item xs={4}>
@@ -182,7 +182,7 @@ const InnerContent = (props) => {
                 name="DNI"
                 selected={props.variable}
                 title="Directa Normal"
-                value={commons.round2(props.yearlyData[0].DNI) + " w/m2"}
+                value={commons.round2(props.yearlyData.DNI) + " w/m2"}
               />
             </Grid>
           </Grid>
@@ -206,9 +206,7 @@ const InnerContent = (props) => {
                 name="Wind Speed"
                 selected={props.variable}
                 title="Velocidad del viento"
-                value={
-                  commons.round2(props.yearlyData[0]["Wind Speed"]) + "m/s"
-                }
+                value={commons.round2(props.yearlyData["Wind Speed"]) + "m/s"}
               />
             </Grid>
             <Grid item xs={4}>
@@ -217,8 +215,7 @@ const InnerContent = (props) => {
                 selected={props.variable}
                 title="Elevación solar"
                 value={
-                  commons.round2(props.yearlyData[0]["Solar Zenith Angle"]) +
-                  "°"
+                  commons.round2(props.yearlyData["Solar Zenith Angle"]) + "°"
                 }
               />
             </Grid>
@@ -227,7 +224,7 @@ const InnerContent = (props) => {
                 name="Temperature"
                 selected={props.variable}
                 title="Temperatura Promedio"
-                value={commons.round2(props.yearlyData[0].Temperature) + "°C"}
+                value={commons.round2(props.yearlyData.Temperature) + "°C"}
               />
             </Grid>
           </Grid>
@@ -248,7 +245,8 @@ const InnerContent = (props) => {
               valueScale={{ type: "linear", round: true }}
               indexScale={{ type: "band", round: true }}
               colors={{ scheme: "paired" }}
-              enableLabel={false}
+              enableLabel={true}
+              isInteractive={true}
               axisTop={null}
               axisRight={null}
               axisBottom={commons.months}
@@ -262,33 +260,6 @@ const InnerContent = (props) => {
               }}
               labelSkipWidth={12}
               labelSkipHeight={12}
-              legends={[
-                {
-                  dataFrom: "keys",
-                  anchor: "bottom",
-                  direction: "row",
-                  justify: false,
-                  translateX: 0,
-                  translateY: 60,
-                  itemsSpacing: 1,
-                  itemWidth: 100,
-                  itemHeight: 20,
-                  itemDirection: "left-to-right",
-                  itemOpacity: 0.85,
-                  symbolSize: 20,
-                  effects: [
-                    {
-                      on: "hover",
-                      style: {
-                        itemOpacity: 1,
-                      },
-                    },
-                  ],
-                },
-              ]}
-              animate={true}
-              motionStiffness={90}
-              motionDamping={15}
             />
           </div>
         </Grid>
@@ -304,21 +275,36 @@ const SideSummary = (props) => {
 
   const [yearlyData, setyearlyData] = useState(null);
   const [monthlyData, setmonthlyData] = useState(null);
+  const [elevation, setElevation] = useState(0);
 
   useEffect(() => {
     if (coord[0] !== 0 && coord[1] !== 0) {
       const getLon = commons.round2(coord[0]);
       const getLat = commons.round2(coord[1]);
-      axios
-        .get(commons.backendURL + "/m/" + year + "/" + getLat + "_" + getLon)
-        .then((result) => {
-          setmonthlyData(result.data);
-        });
-      axios
-        .get(commons.backendURL + "/y/" + year + "/" + getLat + "_" + getLon)
-        .then((result) => {
-          setyearlyData(result.data);
-        });
+
+      var requests = [
+        axios.get(
+          commons.backendURL + "/api/m/" + year + "/" + getLat + "+" + getLon
+        ),
+        axios.get(
+          commons.backendURL + "/api/y/" + year + "/" + getLat + "+" + getLon
+        ),
+        axios.get(commons.backendURL + "/api/c/" + getLat + "+" + getLon),
+      ];
+
+      axios.all(requests).then(
+        axios.spread((...responses) => {
+          if (
+            responses[0].status === 200 &&
+            responses[1].status === 200 &&
+            responses[2].status === 200
+          ) {
+            setmonthlyData(responses[0].data[0]);
+            setyearlyData(responses[1].data[0]);
+            setElevation(responses[2].data[0]);
+          }
+        })
+      );
     }
   }, [year, coord]);
 
@@ -329,6 +315,7 @@ const SideSummary = (props) => {
       variable={variable}
       yearlyData={yearlyData}
       monthlyData={monthlyData}
+      elevation={elevation}
     />
   );
 };

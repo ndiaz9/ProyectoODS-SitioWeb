@@ -1,17 +1,15 @@
 import React, { useState } from "react";
-import Grid from "@material-ui/core/Grid";
-import mapboxgl from "mapbox-gl";
 import Map from "./components/map";
 import SideContent from "./components/sidecontent";
 import InfoCard from "./components/infocard";
-
-mapboxgl.accessToken =
-  "pk.eyJ1IjoibmRpYXo5OCIsImEiOiJja2hsOXplNnYxNDRrMnRuMjU0Z2JsOHUxIn0.To4YKhzB_9tGdI-eSxuPcw";
+import GenerationForm from "./components/generationform";
 
 function App() {
   const [selectedCoord, setSelectedCoord] = useState([0, 0]);
-  const [year, setYear] = useState(2018);
+  const [year, setYear] = useState(2019);
   const [variable, setVariable] = useState("GHI");
+  const [content, setContent] = useState(0);
+  const [reloadMap, setReloadMap] = useState(false);
 
   const handleCoordChange = (newValue) => {
     setSelectedCoord(newValue);
@@ -25,28 +23,39 @@ function App() {
     setVariable(variable);
   };
 
+  const handleContentChange = (content) => {
+    setContent(content);
+  };
+
+  const handleReloadMap = (reload) => {
+    setReloadMap(reload);
+  };
+
   return (
     <div>
-      <Grid container direction="row">
-        <Grid item xs={4}>
-          <SideContent coord={selectedCoord} year={year} variable={variable} />
-        </Grid>
-        <Grid item xs={8}>
-          <Map
-            coord={selectedCoord}
-            onCoordChange={handleCoordChange}
-            year={year}
-            variable={variable}
-            onYearChange={handleYearChange}
-            onVariableChange={handleVariableChange}
-          />
-        </Grid>
-      </Grid>
+      {content === 0 ? (
+        <SideContent coord={selectedCoord} year={year} variable={variable} />
+      ) : (
+        <GenerationForm coord={selectedCoord} year={year} variable={variable} />
+      )}
       <InfoCard
         coord={selectedCoord}
         onCoordChange={handleCoordChange}
         year={year}
         variable={variable}
+        content={content}
+        reloadMap={reloadMap}
+        onYearChange={handleYearChange}
+        onVariableChange={handleVariableChange}
+        onContentChange={handleContentChange}
+        onReloadMap={handleReloadMap}
+      />
+      <Map
+        coord={selectedCoord}
+        onCoordChange={handleCoordChange}
+        year={year}
+        variable={variable}
+        reloadMap={reloadMap}
         onYearChange={handleYearChange}
         onVariableChange={handleVariableChange}
       />

@@ -1,16 +1,25 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Grid } from "@material-ui/core";
+import { Grid, Card } from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import SideSummary from "./sideTabs/sidesummary";
 import SideGraphs from "./sideTabs/sidegraphs";
+import SideDownloads from "./sideTabs/sidedownloads";
 
 const useStyles = makeStyles((theme) => ({
   contentContainer: {
     background: "#F1F1E6",
-    height: "100vh",
+    height: "85vh",
+    width: "40vw",
+    position: "absolute",
+    marginTop: "11vh",
+    left: "20px",
+    zIndex: "1",
+    overflowY: "auto",
+    overflowWrap: "break-word",
+    paddingBottom: "10px",
   },
   contentHeader: {
     fontSize: "30px",
@@ -35,8 +44,8 @@ function TabPanel(props) {
     <div
       role="tabpanel"
       hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
+      id={`tabpanel-${index}`}
+      aria-labelledby={`tab-${index}`}
       className={classes.tabGrid}
       {...other}
     >
@@ -47,8 +56,8 @@ function TabPanel(props) {
 
 function a11yProps(index) {
   return {
-    id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
+    id: `tab-${index}`,
+    "aria-controls": `tabpanel-${index}`,
   };
 }
 
@@ -65,14 +74,14 @@ const SideContent = (props) => {
   };
 
   return (
-    <div className={classes.contentContainer}>
+    <Card className={classes.contentContainer}>
       <Grid container>
-        <AppBar position="static" className={classes.appbar}>
+        <AppBar position="sticky">
           <Tabs
             value={value}
             onChange={handleChange}
             variant="fullWidth"
-            aria-label="simple tabs example"
+            aria-label="tabs"
             centered
           >
             <Tab className={classes.tab} label="Resumen" {...a11yProps(0)} />
@@ -84,13 +93,13 @@ const SideContent = (props) => {
           <SideSummary year={year} coord={coord} variable={variable} />
         </TabPanel>
         <TabPanel value={value} index={1}>
-          <SideGraphs coord={coord} year={year}/>
+          <SideGraphs coord={coord} year={year} />
         </TabPanel>
         <TabPanel value={value} index={2}>
-          Item Three
+          <SideDownloads coord={coord} />
         </TabPanel>
       </Grid>
-    </div>
+    </Card>
   );
 };
 

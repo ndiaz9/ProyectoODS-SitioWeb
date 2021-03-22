@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
     color: "#FFFFFF",
   },
   graphContainer: {
-    height: "290px",
+    height: "390px",
     padding: "10px",
   },
   loadingContainer: {
@@ -55,7 +55,7 @@ const InnerContent = (props) => {
           <div className={classes.graphContainer}>
             <ResponsiveLine
               data={graphData}
-              margin={{ top: 10, right: 10, bottom: 80, left: 50 }}
+              margin={{ top: 10, right: 50, bottom: 80, left: 50 }}
               colors={{ scheme: "category10" }}
               xScale={{ type: "point" }}
               yScale={{
@@ -86,6 +86,7 @@ const InnerContent = (props) => {
                 legendOffset: -40,
                 legendPosition: "middle",
               }}
+              enablePointLabel={true}
               pointSize={10}
               pointColor={{ theme: "background" }}
               pointBorderWidth={2}
@@ -115,21 +116,29 @@ const YearlyGraph = (props) => {
       var requests = [];
       commons.years.forEach((year) => {
         const req = axios.get(
-          commons.backendURL + "/y/" + year + "/" + getLat + "_" + getLon
+          commons.backendURL + "/api/y/" + year + "/" + getLat + "+" + getLon
         );
         requests.push(req);
       });
 
       axios.all(requests).then(
         axios.spread((...responses) => {
-          var newData = [];
-          commons.years.forEach((year, index) => {
-            newData.push({
-              x: year,
-              y: commons.round2(responses[index].data[0][variable]),
-            });
+          var error = false;
+          responses.forEach((response) => {
+            if (response.status !== 200) {
+              error = true;
+            }
           });
-          setData(newData);
+          if (!error) {
+            var newData = [];
+            commons.years.forEach((year, index) => {
+              newData.push({
+                x: year,
+                y: commons.round2(responses[index].data[0][variable]),
+              });
+            });
+            setData(newData);
+          }
         })
       );
     }
