@@ -1,4 +1,4 @@
-const backendURL = "http://localhost:3001";
+const backendURL = "";
 
 const years = [
   1998,
