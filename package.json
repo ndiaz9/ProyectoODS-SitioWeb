@@ -1,0 +1,25 @@
+{
+  "name": "proyectoods-sitioweb",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "cd nsrdb-website-back && npm install && npm start",
+    "heroku-postbuild": "cd nsrdb-website && npm install && npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ndiaz9/ProyectoODS-SitioWeb.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ndiaz9/ProyectoODS-SitioWeb/issues"
+  },
+  "engines": {
+    "node": "12.18.3"
+  },
+  "homepage": "https://github.com/ndiaz9/ProyectoODS-SitioWeb#readme"
+}

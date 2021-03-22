@@ -37,6 +37,10 @@ app.use(function (req, res, next) {
   next(createError(404));
 });
 
+app.get("*", (req, res) => {
+  res.sendFile(path.join(publicPath, "index.html"));
+});
+
 // error handler
 app.use(function (err, req, res, next) {
   // set locals, only providing error in development
@@ -46,10 +50,6 @@ app.use(function (err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   res.render("error");
-});
-
-app.get("*", (req, res) => {
-  res.sendFile(path.join(publicPath, "index.html"));
 });
 
 app.listen(port, () => {
