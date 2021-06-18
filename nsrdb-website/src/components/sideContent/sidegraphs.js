@@ -15,6 +15,8 @@ import MonthlyGraph from "../graphs/monthlyGraph";
 import SingleYearGraph from "../graphs/singleYearGraph";
 import SingleDayGraph from "../graphs/singleDayGraph";
 import YearlyByHourGraph from "../graphs/yearlyByHourGraph";
+import strings from "../../strings/es.json";
+import colors from "../../assets/colors/colors.json";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -31,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
   alertText: {
     fontWeight: "bold",
     fontSize: "16px",
-    color: "#69B470",
+    color: colors.mainTheme,
   },
 }));
 
@@ -104,7 +106,7 @@ const Graphs = (props) => {
           className={classes.errorContainer}
         >
           <Typography className={classes.alertText} align="center">
-            Seleccione un punto en el mapa y un gráfico.
+            {strings.selectAPointAndGraph}
           </Typography>
         </Grid>
       );
@@ -126,45 +128,45 @@ const SideGraphs = (props) => {
       <Grid container className={classes.graphMenu}>
         <Grid item>
           <FormControl className={classes.formControl} fullWidth={true}>
-            <InputLabel htmlFor="grouped-select">Gráfico</InputLabel>
+            <InputLabel htmlFor="grouped-select">{strings.graph}</InputLabel>
             <Select
               id="grouped-select"
               value={graphID}
               onChange={handleGraphChange}
               disabled={coord[0] === 0 && coord[1] === 0}
             >
-              <ListSubheader>Radiación</ListSubheader>
-              <MenuItem value={11}>Global Horizontal - Ciclo Mensual {year}</MenuItem>
-              <MenuItem value={12}>Global Horizontal - Ciclo por Horas {year}</MenuItem>
-              <MenuItem value={13}>Global Horizontal - Histórico Anual</MenuItem>
-              <MenuItem value={14}>Global Horizontal - Histórico Mensual</MenuItem>
-              <MenuItem value={15}>Global Horizontal - Histórico por Horas</MenuItem>
+              <ListSubheader>{strings.radiation}</ListSubheader>
+              <MenuItem value={11}>{strings.globalHorizontal} - {strings.monthlyCycle} {year}</MenuItem>
+              <MenuItem value={12}>{strings.globalHorizontal} - {strings.hourlyCycle} {year}</MenuItem>
+              <MenuItem value={13}>{strings.globalHorizontal} - {strings.yearlyHistorical}</MenuItem>
+              <MenuItem value={14}>{strings.globalHorizontal} - {strings.monthlyHistorical}</MenuItem>
+              <MenuItem value={15}>{strings.globalHorizontal} - {strings.hourlyHistorical}</MenuItem>
               <Divider/>
-              <MenuItem value={21}>Difusa Horizontal - Ciclo Mensual {year}</MenuItem>
-              <MenuItem value={22}>Difusa Horizontal - Ciclo por Horas {year}</MenuItem>
-              <MenuItem value={23}>Difusa Horizontal - Histórico Anual</MenuItem>
-              <MenuItem value={24}>Difusa Horizontal - Histórico Mensual</MenuItem>
-              <MenuItem value={25}>Difusa Horizontal - Histórico por Horas</MenuItem>
+              <MenuItem value={21}>{strings.diffuseHorizontal} - {strings.monthlyCycle} {year}</MenuItem>
+              <MenuItem value={22}>{strings.diffuseHorizontal} - {strings.hourlyCycle} {year}</MenuItem>
+              <MenuItem value={23}>{strings.diffuseHorizontal} - {strings.yearlyHistorical}</MenuItem>
+              <MenuItem value={24}>{strings.diffuseHorizontal} - {strings.monthlyHistorical}</MenuItem>
+              <MenuItem value={25}>{strings.diffuseHorizontal} - {strings.hourlyHistorical}</MenuItem>
               <Divider/>
-              <MenuItem value={31}>Directa Normal - Ciclo Mensual {year}</MenuItem>
-              <MenuItem value={32}>Directa Normal - Ciclo por Horas {year}</MenuItem>
-              <MenuItem value={33}>Directa Normal - Histórico Anual</MenuItem>
-              <MenuItem value={34}>Directa Normal - Histórico Mensual</MenuItem>
-              <MenuItem value={35}>Directa Normal - Histórico por Horas</MenuItem>
+              <MenuItem value={31}>{strings.directNormal} - {strings.monthlyCycle} {year}</MenuItem>
+              <MenuItem value={32}>{strings.directNormal} - {strings.hourlyCycle} {year}</MenuItem>
+              <MenuItem value={33}>{strings.directNormal} - {strings.yearlyHistorical}</MenuItem>
+              <MenuItem value={34}>{strings.directNormal} - {strings.monthlyHistorical}</MenuItem>
+              <MenuItem value={35}>{strings.directNormal} - {strings.hourlyHistorical}</MenuItem>
 
-              <ListSubheader>Temperatura</ListSubheader>
-              <MenuItem value={41}>Temperatura Promedio - Ciclo Mensual {year}</MenuItem>
-              <MenuItem value={42}>Temperatura Promedio - Ciclo por Horas {year}</MenuItem>
-              <MenuItem value={43}>Temperatura Promedio - Histórico Anual</MenuItem>
-              <MenuItem value={44}>Temperatura Promedio - Histórico Mensual</MenuItem>
-              <MenuItem value={45}>Temperatura Promedio - Histórico por Horas</MenuItem>
+              <ListSubheader>{strings.temperature}</ListSubheader>
+              <MenuItem value={41}>{strings.averageTemperature} - {strings.monthlyCycle} {year}</MenuItem>
+              <MenuItem value={42}>{strings.averageTemperature} - {strings.hourlyCycle} {year}</MenuItem>
+              <MenuItem value={43}>{strings.averageTemperature} - {strings.yearlyHistorical}</MenuItem>
+              <MenuItem value={44}>{strings.averageTemperature} - {strings.monthlyHistorical}</MenuItem>
+              <MenuItem value={45}>{strings.averageTemperature} - {strings.hourlyHistorical}</MenuItem>
      
-              <ListSubheader>Viento</ListSubheader>
-              <MenuItem value={51}>Velocidad del Viento - Ciclo Mensual {year}</MenuItem>
-              <MenuItem value={52}>Velocidad del Viento - Ciclo por Horas {year}</MenuItem>
-              <MenuItem value={53}>Velocidad del Viento - Histórico Anual</MenuItem>
-              <MenuItem value={54}>Velocidad del Viento - Histórico Mensual</MenuItem>
-              <MenuItem value={55}>Velocidad del Viento - Histórico por Horas</MenuItem>
+              <ListSubheader>{strings.wind}</ListSubheader>
+              <MenuItem value={51}>{strings.windSpeed} - {strings.monthlyCycle} {year}</MenuItem>
+              <MenuItem value={52}>{strings.windSpeed} - {strings.hourlyCycle} {year}</MenuItem>
+              <MenuItem value={53}>{strings.windSpeed} - {strings.yearlyHistorical}</MenuItem>
+              <MenuItem value={54}>{strings.windSpeed} - {strings.monthlyHistorical}</MenuItem>
+              <MenuItem value={55}>{strings.windSpeed} - {strings.hourlyHistorical}</MenuItem>
             </Select>
           </FormControl>
         </Grid>

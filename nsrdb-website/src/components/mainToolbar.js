@@ -5,17 +5,19 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Button from "@material-ui/core/Button";
 import uniandesLogo from "../assets/images/logouniandes_0.png";
+import strings from "../strings/es.json";
+import colors from "../assets/colors/colors.json";
 
 const useStyles = makeStyles((theme) => ({
   appbar: {
-    background: "#50a158",
+    background: colors.mainTheme,
     opacity: "0.9",
   },
   menuButton: {
     marginRight: "20px",
   },
   link: {
-    color: "#ffffff",
+    color: colors.textBright,
     textDecoration: "none",
   },
   mainLogo: {
@@ -42,12 +44,12 @@ export default function MainToolbar() {
           ></img>
           <Button color="inherit" className={classes.menuButton}>
             <Link className={classes.link} to="/">
-              Explorar
+              {strings.solarExplorer}
             </Link>
           </Button>
           <Button color="inherit" className={classes.menuButton}>
             <Link className={classes.link} to="/docs">
-              Documentación
+              {strings.documentation}
             </Link>
           </Button>
         </Toolbar>

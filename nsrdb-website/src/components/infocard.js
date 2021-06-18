@@ -12,22 +12,24 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import TimelineIcon from "@material-ui/icons/Timeline";
-import WbIncandescentIcon from "@material-ui/icons/WbIncandescent";
-import SearchIcon from "@material-ui/icons/Search";
+import GenerationIcon from "../assets/icons/generation.svg";
+import DataIcon from "../assets/icons/data.svg";
 import axios from "axios";
-import commons from "../commons";
+import constants from "../utils/constants";
+import functions from "../utils/functions";
+import strings from "../strings/es.json";
+import colors from "../assets/colors/colors.json";
 
 const useStyles = makeStyles((theme) => ({
   titleContainer: {
     padding: "5px",
-    background: "#69B470",
+    background: colors.mainTheme,
     marginBottom: "5px",
   },
   titleText: {
     fontSize: "12px",
     fontWeight: "bold",
-    color: "#FFFFFF",
+    color: colors.textBright,
   },
   coordTitle: {
     fontSize: "13px",
@@ -35,11 +37,11 @@ const useStyles = makeStyles((theme) => ({
   coordContent: {
     fontSize: "13px",
     fontWeight: "bold",
-    color: "#004346",
+    color: colors.textDark,
   },
   container: {
-    background: "#F1F1E6",
-    width: "250px",
+    background: colors.mainBackground,
+    width: "15vw",
     position: "absolute",
     marginTop: "11vh",
     right: "20px",
@@ -57,8 +59,23 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
   },
   searchButton: {
-    background: "#318F6C",
-    color: "#FFFFFF",
+    background: colors.buttonBackground,
+    color: colors.buttonText,
+  },
+  icon: {
+    width: "30px",
+    height: "30px",
+    cursor: "pointer",
+  },
+  colorBar: {
+    marginLeft: "10px",
+    marginRight: "10px",
+    height: "10px",
+    backgroundImage:
+      "linear-gradient(to right, #0000ff,#4169e1,#00ffff,#00ff00,#ffff00,#ff0000)",
+  },
+  colorBarLabel: {
+    fontSize: "10px",
   },
 }));
 
@@ -99,10 +116,12 @@ const InfoCard = (props) => {
   const year = props.year;
   const variable = props.variable;
   const reloadMap = props.reloadMap;
+  const lowerLimit = props.variableLimits[0];
+  const upperLimit = props.variableLimits[1];
+  const limitDiff = upperLimit - lowerLimit;
 
   const [anchorElYear, setAnchorElYear] = useState(null);
   const [anchorElVariable, setAnchorElVariable] = useState(null);
-  const [showSearchMenu, setSearchMenu] = useState(false);
   const [searchCoords, setSearchCoords] = useState({ lat: 0, lon: 0 });
   const [openError, setOpenError] = useState(false);
 
@@ -148,7 +167,7 @@ const InfoCard = (props) => {
     if (searchCoords.lat !== 0 && searchCoords.lon !== 0) {
       axios
         .get(
-          commons.backendURL +
+          constants.backendURL +
             "/api/c/near/" +
             searchCoords.lat +
             "+" +
@@ -167,42 +186,44 @@ const InfoCard = (props) => {
   return (
     <Card className={classes.container}>
       <Grid container className={classes.titleContainer}>
-        <Typography className={classes.titleText}>RECURSOS</Typography>
+        <Typography className={classes.titleText}>
+          {strings.resources.toUpperCase()}
+        </Typography>
       </Grid>
       <Grid container justify="center">
         <Grid item>
-          <Tooltip title="Datos Meteorológicos">
+          <Tooltip title={strings.seeMeteorologicalData}>
             <IconButton
               aria-label="delete"
               onClick={() => handleContentClick(0)}
             >
-              <TimelineIcon />
+              <img
+                src={DataIcon}
+                className={classes.icon}
+                alt={strings.meteorologicalDataIcon}
+              />
             </IconButton>
           </Tooltip>
         </Grid>
         <Grid item>
-          <Tooltip title="Generación Eléctrica Fotovoltaica">
+          <Tooltip title={strings.estimatePhotovoltaicGeneration}>
             <IconButton
               aria-label="delete"
               onClick={() => handleContentClick(1)}
             >
-              <WbIncandescentIcon />
-            </IconButton>
-          </Tooltip>
-        </Grid>
-        <Grid item>
-          <Tooltip title="Buscar Coordenadas">
-            <IconButton
-              aria-label="delete"
-              onClick={() => setSearchMenu(!showSearchMenu)}
-            >
-              <SearchIcon />
+              <img
+                src={GenerationIcon}
+                className={classes.icon}
+                alt={strings.generationIcon}
+              />
             </IconButton>
           </Tooltip>
         </Grid>
       </Grid>
       <Grid container className={classes.titleContainer}>
-        <Typography className={classes.titleText}>MAPA ACTUAL</Typography>
+        <Typography className={classes.titleText}>
+          {strings.currentMap.toUpperCase()}
+        </Typography>
       </Grid>
       <Grid container justify="center">
         <Grid item>
@@ -220,7 +241,7 @@ const InfoCard = (props) => {
             onClose={handleClose}
             anchorEl={anchorElYear}
           >
-            {commons.years.map((year) => (
+            {constants.years.map((year) => (
               <MenuItem
                 className={classes.menuitem}
                 key={year}
@@ -246,8 +267,8 @@ const InfoCard = (props) => {
             onClose={handleClose}
             anchorEl={anchorElVariable}
           >
-            {commons.variables.map((variable) => {
-              if (variable !== "elevation") {
+            {constants.variables.map((variable) => {
+              if (variable !== "Wind Speed" && variable !== "elevation") {
                 return (
                   <MenuItem
                     className={classes.menuitem}
@@ -264,103 +285,132 @@ const InfoCard = (props) => {
           </Menu>
         </Grid>
       </Grid>
+      <Grid container justify="center" alignItems="center">
+        <Grid item xs={12} className={classes.colorBar} />
+        <Grid item xs={2}>
+          <Typography align="center" className={classes.colorBarLabel}>
+            {functions.round2(lowerLimit)}
+          </Typography>
+        </Grid>
+        <Grid item xs={2}>
+          <Typography align="center" className={classes.colorBarLabel}>
+            {functions.round2(lowerLimit + 0.2 * limitDiff)}
+          </Typography>
+        </Grid>
+        <Grid item xs={2}>
+          <Typography align="center" className={classes.colorBarLabel}>
+            {functions.round2(lowerLimit + 0.4 * limitDiff)}
+          </Typography>
+        </Grid>
+        <Grid item xs={2}>
+          <Typography align="center" className={classes.colorBarLabel}>
+            {functions.round2(lowerLimit + 0.6 * limitDiff)}
+          </Typography>
+        </Grid>
+        <Grid item xs={2}>
+          <Typography align="center" className={classes.colorBarLabel}>
+            {functions.round2(lowerLimit + 0.8 * limitDiff)}
+          </Typography>
+        </Grid>
+        <Grid item xs={2}>
+          <Typography align="center" className={classes.colorBarLabel}>
+            {functions.round2(upperLimit)}
+          </Typography>
+        </Grid>
+      </Grid>
       <Grid container className={classes.titleContainer}>
         <Typography className={classes.titleText}>
-          SITIO SELECCIONADO
+          {strings.selectedCoordinates.toUpperCase()}
         </Typography>
       </Grid>
       <Grid container justify="center">
         <Grid item xs={6}>
           <Typography align="center" className={classes.coordTitle}>
-            LATITUD
+            {strings.latitude.toUpperCase()}
           </Typography>
         </Grid>
         <Grid item xs={6}>
           <Typography align="center" className={classes.coordTitle}>
-            LONGITUD
+            {strings.longitude.toUpperCase()}
           </Typography>
         </Grid>
       </Grid>
       <Grid container justify="center">
         <Grid item xs={6}>
           <Typography align="center" className={classes.coordContent}>
-            {selectedCoord[0] === 0 ? "--" : commons.round2(selectedCoord[1])}
+            {selectedCoord[0] === 0 ? "--" : functions.round2(selectedCoord[1])}
           </Typography>
         </Grid>
         <Grid item xs={6}>
           <Typography align="center" className={classes.coordContent}>
-            {selectedCoord[1] === 0 ? "--" : commons.round2(selectedCoord[0])}
+            {selectedCoord[1] === 0 ? "--" : functions.round2(selectedCoord[0])}
           </Typography>
         </Grid>
       </Grid>
-      {showSearchMenu ? (
-        <div>
-          <Grid container className={classes.titleContainer}>
-            <Typography className={classes.titleText}>BUSCAR</Typography>
-          </Grid>
-          <Grid
-            container
-            alignItems="center"
-            spacing={1}
-            className={classes.searchContainer}
+      <Grid container className={classes.titleContainer}>
+        <Typography className={classes.titleText}>
+          {strings.search.toUpperCase()}
+        </Typography>
+      </Grid>
+      <Grid
+        container
+        alignItems="center"
+        spacing={1}
+        className={classes.searchContainer}
+      >
+        <Grid item xs={6} align="center">
+          <TextField
+            id="latSearch"
+            type="number"
+            variant="outlined"
+            size="small"
+            label={strings.latitude}
+            error={verifyLat(searchCoords.lat)}
+            className={classes.searchBar}
+            onChange={handleSearchCoordsChange("lat")}
+          />
+        </Grid>
+        <Grid item xs={6} align="center">
+          <TextField
+            id="lonSearch"
+            type="number"
+            variant="outlined"
+            size="small"
+            label={strings.longitude}
+            error={verifyLon(searchCoords.lon)}
+            className={classes.searchBar}
+            onChange={handleSearchCoordsChange("lon")}
+          />
+        </Grid>
+        <Grid container justify="center">
+          <Button
+            variant="contained"
+            className={classes.searchButton}
+            onClick={handleSearchButtonClick}
+            disabled={disableButton(searchCoords.lon, searchCoords.lat)}
           >
-            <Grid item xs={6} align="center">
-              <TextField
-                id="latSearch"
-                type="number"
-                variant="outlined"
-                size="small"
-                label="Latitud"
-                error={verifyLat(searchCoords.lat)}
-                className={classes.searchBar}
-                onChange={handleSearchCoordsChange("lat")}
-              />
-            </Grid>
-            <Grid item xs={6} align="center">
-              <TextField
-                id="lonSearch"
-                type="number"
-                variant="outlined"
-                size="small"
-                label="Longitud"
-                error={verifyLon(searchCoords.lon)}
-                className={classes.searchBar}
-                onChange={handleSearchCoordsChange("lon")}
-              />
-            </Grid>
-            <Grid container justify="center">
-              <Button
-                variant="contained"
-                className={classes.searchButton}
-                onClick={handleSearchButtonClick}
-                disabled={disableButton(searchCoords.lon, searchCoords.lat)}
-              >
-                Buscar
+            {strings.search}
+          </Button>
+          <Dialog
+            open={openError}
+            onClose={handleCloseError}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">Error</DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                {strings.coordinatesNotFoundError}
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleCloseError} color="primary" autoFocus>
+                {strings.close}
               </Button>
-              <Dialog
-                open={openError}
-                onClose={handleCloseError}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-              >
-                <DialogTitle id="alert-dialog-title">Error</DialogTitle>
-                <DialogContent>
-                  <DialogContentText id="alert-dialog-description">
-                    No se ha encontrado un punto a 5km alrededor de las
-                    coordenadas ingresadas. Por favor, ingrese otras
-                    coordenadas.
-                  </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={handleCloseError} color="primary" autoFocus>
-                    Cerrar
-                  </Button>
-                </DialogActions>
-              </Dialog>
-            </Grid>
-          </Grid>
-        </div>
-      ) : null}
+            </DialogActions>
+          </Dialog>
+        </Grid>
+      </Grid>
     </Card>
   );
 };

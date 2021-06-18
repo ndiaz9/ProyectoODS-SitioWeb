@@ -4,13 +4,15 @@ import { Grid, Card } from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
-import SideSummary from "./sideTabs/sidesummary";
-import SideGraphs from "./sideTabs/sidegraphs";
-import SideDownloads from "./sideTabs/sidedownloads";
+import SideSummary from "./sidesummary";
+import SideGraphs from "./sidegraphs";
+import SideDownloads from "./sidedownloads";
+import strings from "../../strings/es.json";
+import colors from "../../assets/colors/colors.json";
 
 const useStyles = makeStyles((theme) => ({
   contentContainer: {
-    background: "#F1F1E6",
+    background: colors.mainBackground,
     height: "85vh",
     width: "40vw",
     position: "absolute",
@@ -30,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "12px",
     minWidth: 50,
     width: 50,
-    background: "#09BC8A",
+    background: colors.tabBackground,
   },
   tabGrid: {
     width: "100%",
@@ -84,9 +86,21 @@ const SideContent = (props) => {
             aria-label="tabs"
             centered
           >
-            <Tab className={classes.tab} label="Resumen" {...a11yProps(0)} />
-            <Tab className={classes.tab} label="Gráficos" {...a11yProps(1)} />
-            <Tab className={classes.tab} label="Descargas" {...a11yProps(2)} />
+            <Tab
+              className={classes.tab}
+              label={strings.summary}
+              {...a11yProps(0)}
+            />
+            <Tab
+              className={classes.tab}
+              label={strings.graphs}
+              {...a11yProps(1)}
+            />
+            <Tab
+              className={classes.tab}
+              label={strings.downloads}
+              {...a11yProps(2)}
+            />
           </Tabs>
         </AppBar>
         <TabPanel value={value} index={0}>

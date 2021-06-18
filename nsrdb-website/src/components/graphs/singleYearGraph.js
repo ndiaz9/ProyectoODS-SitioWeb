@@ -3,19 +3,22 @@ import axios from "axios";
 import { makeStyles } from "@material-ui/core/styles";
 import { Typography, Grid, CircularProgress } from "@material-ui/core";
 import { ResponsiveLine } from "@nivo/line";
-import commons from "../../commons";
+import constants from "../../utils/constants";
+import functions from "../../utils/functions";
+import strings from "../../strings/es.json";
+import colors from "../../assets/colors/colors.json";
 
 const useStyles = makeStyles((theme) => ({
   titleContainer: {
     padding: "5px",
-    background: "#69B470",
+    background: colors.mainTheme,
     marginBottom: "5px",
     width: "100%",
   },
   titleText: {
     fontSize: "15px",
     fontWeight: "bold",
-    color: "#FFFFFF",
+    color: colors.textBright,
   },
   graphContainer: {
     height: "390px",
@@ -49,8 +52,8 @@ const InnerContent = (props) => {
         <Grid item>
           <Grid container className={classes.titleContainer}>
             <Typography className={classes.titleText}>
-              {commons.variableTitles[props.variable]} - {props.year} (
-              {commons.variableMeasurements[props.variable]})
+              {constants.variableTitles[props.variable]} - {props.year} (
+              {constants.variableMeasurements[props.variable]})
             </Typography>
           </Grid>
           <div className={classes.graphContainer}>
@@ -75,7 +78,7 @@ const InnerContent = (props) => {
                 tickSize: 5,
                 tickPadding: 5,
                 tickRotation: 90,
-                legend: "Año",
+                legend: strings.month,
                 legendOffset: 50,
                 legendPosition: "middle",
               }}
@@ -111,21 +114,21 @@ const SingleYearGraph = (props) => {
 
   useEffect(() => {
     if (coord[0] !== 0 && coord[1] !== 0) {
-      const getLon = commons.round2(coord[0]);
-      const getLat = commons.round2(coord[1]);
+      const getLon = functions.round2(coord[0]);
+      const getLat = functions.round2(coord[1]);
       setData(null);
 
       axios
         .get(
-          commons.backendURL + "/api/m/" + year + "/" + getLat + "+" + getLon
+          constants.backendURL + "/api/m/" + year + "/" + getLat + "+" + getLon
         )
         .then((result) => {
           if (result.status === 200) {
             var newData = [];
             result.data[0][variable].forEach((monthData, index) => {
               newData.push({
-                x: commons.months[index],
-                y: commons.round2(monthData),
+                x: constants.months[index],
+                y: functions.round2(monthData),
               });
             });
             setData(newData);

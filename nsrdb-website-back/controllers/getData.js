@@ -29,7 +29,7 @@ const getDailyData = (year, latitude, longitude, callback) => {
     client
       .db("solarAtlas")
       .collection(year + "-d")
-      .find({ latitude: latitude, longitude: longitude })
+      .find({ latitude, longitude })
       .toArray((err, data) => {
         callback(data, err);
       });

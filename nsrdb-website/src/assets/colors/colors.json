@@ -1,0 +1,14 @@
+{
+  "buttonBackground": "#318F6C",
+  "buttonText": "#FFFFFF",
+  "cardBackground": "#D9E5E1",
+  "cardBackgroundSelected": "#ABD86F",
+  "mainBackground": "#F1F1E6",
+  "mainTheme": "#69B470",
+  "pointHistorical": "#1C74B4",
+  "pointPrediction": "#D53E4F",
+  "tabBackground": "#09BC8A",
+  "textBright": "#FFFFFF",
+  "textDark": "#004346",
+  "warningBackground": "#E1F0e2"
+}

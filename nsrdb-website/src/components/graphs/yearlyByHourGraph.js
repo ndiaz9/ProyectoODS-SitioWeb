@@ -3,19 +3,21 @@ import axios from "axios";
 import { makeStyles } from "@material-ui/core/styles";
 import { Typography, Grid, CircularProgress } from "@material-ui/core";
 import { ResponsiveHeatMap } from "@nivo/heatmap";
-import commons from "../../commons";
+import constants from "../../utils/constants";
+import functions from "../../utils/functions";
+import colors from "../../assets/colors/colors.json";
 
 const useStyles = makeStyles((theme) => ({
   titleContainer: {
     padding: "5px",
-    background: "#69B470",
+    background: colors.mainTheme,
     marginBottom: "5px",
     width: "100%",
   },
   titleText: {
     fontSize: "15px",
     fontWeight: "bold",
-    color: "#FFFFFF",
+    color: colors.textBright,
   },
   graphContainer: {
     height: "500px",
@@ -43,14 +45,14 @@ const InnerContent = (props) => {
         <Grid item>
           <Grid container className={classes.titleContainer}>
             <Typography className={classes.titleText}>
-              {commons.variableTitles[props.variable]} (
-              {commons.variableMeasurements[props.variable]})
+              {constants.variableTitles[props.variable]} (
+              {constants.variableMeasurements[props.variable]})
             </Typography>
           </Grid>
           <div className={classes.graphContainer}>
             <ResponsiveHeatMap
               data={props.data}
-              keys={commons.hours}
+              keys={constants.hours}
               indexBy="year"
               margin={{ top: 0, right: 5, bottom: 40, left: 40 }}
               forceSquare={false}
@@ -106,14 +108,14 @@ const YearlyByHourGraph = (props) => {
 
   useEffect(() => {
     if (coord[0] !== 0 && coord[1] !== 0) {
-      const getLon = commons.round2(coord[0]);
-      const getLat = commons.round2(coord[1]);
+      const getLon = functions.round2(coord[0]);
+      const getLat = functions.round2(coord[1]);
       setData(null);
 
       var requests = [];
-      commons.years.forEach((year) => {
+      constants.years.forEach((year) => {
         const req = axios.get(
-          commons.backendURL + "/api/h/" + year + "/" + getLat + "+" + getLon
+          constants.backendURL + "/api/h/" + year + "/" + getLat + "+" + getLon
         );
         requests.push(req);
       });
@@ -128,15 +130,14 @@ const YearlyByHourGraph = (props) => {
             }
           });
           if (!error) {
-            commons.years.forEach((year, index) => {
+            constants.years.forEach((year, index) => {
               var yearData = {
                 year: year,
               };
               responses[index].data[0][variable].forEach(
                 (variableData, variableIndex) => {
-                  yearData[commons.hours[variableIndex]] = commons.round2(
-                    variableData
-                  );
+                  yearData[constants.hours[variableIndex]] =
+                    functions.round2(variableData);
                 }
               );
               newData.push(yearData);

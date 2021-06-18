@@ -2,9 +2,13 @@ import React from "react";
 import axios from "axios";
 import ObjectsToCsv from "objects-to-csv";
 import { makeStyles } from "@material-ui/core/styles";
-import { Typography, Grid, Card, Button } from "@material-ui/core";
+import { Typography, Grid, Button } from "@material-ui/core";
 import NotListedLocationIcon from "@material-ui/icons/NotListedLocation";
-import commons from "../../commons";
+import VariableCard from "../variableCard";
+import constants from "../../utils/constants";
+import functions from "../../utils/functions";
+import strings from "../../strings/es.json";
+import colors from "../../assets/colors/colors.json";
 
 const useStyles = makeStyles((theme) => ({
   errorContainer: {
@@ -13,66 +17,33 @@ const useStyles = makeStyles((theme) => ({
   errorIcon: {
     width: "120px",
     height: "120px",
-    color: "#69B470",
+    color: colors.mainTheme,
   },
   alertText: {
     fontWeight: "bold",
     fontSize: "20px",
-    color: "#69B470",
+    color: colors.mainTheme,
   },
   titleContainer: {
     padding: "5px",
-    background: "#69B470",
+    background: colors.mainTheme,
     marginBottom: "5px",
     width: "100%",
   },
   titleText: {
     fontSize: "15px",
     fontWeight: "bold",
-    color: "#FFFFFF",
+    color: colors.textBright,
   },
   variablesContainer: {
     padding: "10px",
     width: "100%",
   },
-  variableCard: {
-    background: "#D9E5E1",
-    padding: "5px",
-    minHeight: "90%",
-  },
-  variableCardTitle: {
-    fontSize: "13px",
-    textTransform: "uppercase",
-  },
-  variableCardValue: {
-    fontSize: "14px",
-    fontWeight: "bold",
-  },
   button: {
-    background: "#318F6C",
-    color: "#FFFFFF",
+    background: colors.buttonBackground,
+    color: colors.buttonText,
   },
 }));
-
-const VariableCard = (props) => {
-  const classes = useStyles();
-  return (
-    <Card className={classes.variableCard}>
-      <Grid container direction="column" justify="center">
-        <Grid item>
-          <Typography align="center" className={classes.variableCardTitle}>
-            {props.title}
-          </Typography>
-        </Grid>
-        <Grid item>
-          <Typography align="center" className={classes.variableCardValue}>
-            {props.value}
-          </Typography>
-        </Grid>
-      </Grid>
-    </Card>
-  );
-};
 
 const SideDownloads = (props) => {
   const classes = useStyles();
@@ -80,15 +51,15 @@ const SideDownloads = (props) => {
 
   const handleYearlyDownload = () => {
     var requests = [];
-    commons.years.forEach((year) => {
+    constants.years.forEach((year) => {
       const req = axios.get(
-        commons.backendURL +
+        constants.backendURL +
           "/api/y/" +
           year +
           "/" +
-          commons.round2(coord[1]) +
+          functions.round2(coord[1]) +
           "+" +
-          commons.round2(coord[0])
+          functions.round2(coord[0])
       );
       requests.push(req);
     });
@@ -103,7 +74,7 @@ const SideDownloads = (props) => {
         });
         if (!error) {
           var newData = [];
-          commons.years.forEach((year, index) => {
+          constants.years.forEach((year, index) => {
             newData.push({
               year: year,
               GHI: responses[index].data[0]["GHI"],
@@ -122,9 +93,9 @@ const SideDownloads = (props) => {
               "data:text/csv;charset=utf-8," + encodeURI(await csv.toString());
             hiddenElement.target = "_blank";
             hiddenElement.download =
-              commons.round2(coord[0]) +
+              functions.round2(coord[0]) +
               "_" +
-              commons.round2(coord[0]) +
+              functions.round2(coord[1]) +
               "_anual.csv";
             hiddenElement.click();
           })();
@@ -135,15 +106,15 @@ const SideDownloads = (props) => {
 
   const handleMonthlyDownload = () => {
     var requests = [];
-    commons.years.forEach((year) => {
+    constants.years.forEach((year) => {
       const req = axios.get(
-        commons.backendURL +
+        constants.backendURL +
           "/api/m/" +
           year +
           "/" +
-          commons.round2(coord[1]) +
+          functions.round2(coord[1]) +
           "+" +
-          commons.round2(coord[0])
+          functions.round2(coord[0])
       );
       requests.push(req);
     });
@@ -158,7 +129,7 @@ const SideDownloads = (props) => {
         });
         if (!error) {
           var newData = [];
-          commons.years.forEach((year, index) => {
+          constants.years.forEach((year, index) => {
             const lengthData = responses[index].data[0]["GHI"].length;
             for (var i = 0; i < lengthData; i++) {
               newData.push({
@@ -181,9 +152,9 @@ const SideDownloads = (props) => {
               "data:text/csv;charset=utf-8," + encodeURI(await csv.toString());
             hiddenElement.target = "_blank";
             hiddenElement.download =
-              commons.round2(coord[0]) +
+              functions.round2(coord[0]) +
               "_" +
-              commons.round2(coord[0]) +
+              functions.round2(coord[1]) +
               "_mensual.csv";
             hiddenElement.click();
           })();
@@ -194,15 +165,15 @@ const SideDownloads = (props) => {
 
   const handleDailyDownload = () => {
     var requests = [];
-    commons.years.forEach((year) => {
+    constants.years.forEach((year) => {
       const req = axios.get(
-        commons.backendURL +
+        constants.backendURL +
           "/api/d/" +
           year +
           "/" +
-          commons.round2(coord[1]) +
+          functions.round2(coord[1]) +
           "+" +
-          commons.round2(coord[0])
+          functions.round2(coord[0])
       );
       requests.push(req);
     });
@@ -217,7 +188,7 @@ const SideDownloads = (props) => {
         });
         if (!error) {
           var newData = [];
-          commons.years.forEach((year, index) => {
+          constants.years.forEach((year, index) => {
             const lengthData = responses[index].data[0]["GHI"].length;
             for (var i = 0; i < lengthData; i++) {
               newData.push({
@@ -240,9 +211,9 @@ const SideDownloads = (props) => {
               "data:text/csv;charset=utf-8," + encodeURI(await csv.toString());
             hiddenElement.target = "_blank";
             hiddenElement.download =
-              commons.round2(coord[0]) +
+              functions.round2(coord[0]) +
               "_" +
-              commons.round2(coord[0]) +
+              functions.round2(coord[1]) +
               "_diario.csv";
             hiddenElement.click();
           })();
@@ -253,15 +224,15 @@ const SideDownloads = (props) => {
 
   const handleHourlyDownload = () => {
     var requests = [];
-    commons.years.forEach((year) => {
+    constants.years.forEach((year) => {
       const req = axios.get(
-        commons.backendURL +
+        constants.backendURL +
           "/api/h/" +
           year +
           "/" +
-          commons.round2(coord[1]) +
+          functions.round2(coord[1]) +
           "+" +
-          commons.round2(coord[0])
+          functions.round2(coord[0])
       );
       requests.push(req);
     });
@@ -276,7 +247,7 @@ const SideDownloads = (props) => {
         });
         if (!error) {
           var newData = [];
-          commons.years.forEach((year, index) => {
+          constants.years.forEach((year, index) => {
             const lengthData = responses[index].data[0]["GHI"].length;
             for (var i = 0; i < lengthData; i++) {
               newData.push({
@@ -299,9 +270,9 @@ const SideDownloads = (props) => {
               "data:text/csv;charset=utf-8," + encodeURI(await csv.toString());
             hiddenElement.target = "_blank";
             hiddenElement.download =
-              commons.round2(coord[0]) +
+              functions.round2(coord[0]) +
               "_" +
-              commons.round2(coord[0]) +
+              functions.round2(coord[1]) +
               "_hora.csv";
             hiddenElement.click();
           })();
@@ -323,7 +294,7 @@ const SideDownloads = (props) => {
         </Grid>
         <Grid item>
           <Typography className={classes.alertText} align="center">
-            Haga click sobre un punto del mapa para descargar datos.
+            {strings.clickDownloadData}
           </Typography>
         </Grid>
       </Grid>
@@ -339,20 +310,22 @@ const SideDownloads = (props) => {
         >
           <Grid item xs={6}>
             <VariableCard
-              title="Latitud"
-              value={commons.round2(coord[1]) + "°"}
+              selected={false}
+              title={strings.latitude}
+              value={functions.round2(coord[1]) + "°"}
             />
           </Grid>
           <Grid item xs={6}>
             <VariableCard
-              title="Longitud"
-              value={commons.round2(coord[0]) + "°"}
+              selected={false}
+              title={strings.longitude}
+              value={functions.round2(coord[0]) + "°"}
             />
           </Grid>
         </Grid>
         <Grid container className={classes.titleContainer}>
           <Typography className={classes.titleText}>
-            Datos disponibles
+            {strings.availableData}
           </Typography>
         </Grid>
         <Grid
@@ -365,7 +338,7 @@ const SideDownloads = (props) => {
           <Grid item>
             <Grid container alignItems="center" spacing={1}>
               <Grid item xs={6}>
-                <Typography align="right">Valores anuales</Typography>
+                <Typography align="right">{strings.yearlyValues}</Typography>
               </Grid>
               <Grid item xs={6}>
                 <Button
@@ -373,7 +346,7 @@ const SideDownloads = (props) => {
                   className={classes.button}
                   onClick={handleYearlyDownload}
                 >
-                  Descargar
+                  {strings.download}
                 </Button>
               </Grid>
             </Grid>
@@ -381,7 +354,9 @@ const SideDownloads = (props) => {
           <Grid item>
             <Grid container alignItems="center" spacing={1}>
               <Grid item xs={6}>
-                <Typography align="right">Valores anuales por hora</Typography>
+                <Typography align="right">
+                  {strings.yearlyValuesPerHour}
+                </Typography>
               </Grid>
               <Grid item xs={6}>
                 <Button
@@ -389,7 +364,7 @@ const SideDownloads = (props) => {
                   className={classes.button}
                   onClick={handleHourlyDownload}
                 >
-                  Descargar
+                  {strings.download}
                 </Button>
               </Grid>
             </Grid>
@@ -397,7 +372,7 @@ const SideDownloads = (props) => {
           <Grid item>
             <Grid container alignItems="center" spacing={1}>
               <Grid item xs={6}>
-                <Typography align="right">Valores mensuales</Typography>
+                <Typography align="right">{strings.monthlyValues}</Typography>
               </Grid>
               <Grid item xs={6}>
                 <Button
@@ -405,7 +380,7 @@ const SideDownloads = (props) => {
                   className={classes.button}
                   onClick={handleMonthlyDownload}
                 >
-                  Descargar
+                  {strings.download}
                 </Button>
               </Grid>
             </Grid>
@@ -413,7 +388,7 @@ const SideDownloads = (props) => {
           <Grid item>
             <Grid container alignItems="center" spacing={1}>
               <Grid item xs={6}>
-                <Typography align="right">Valores diarios</Typography>
+                <Typography align="right">{strings.dailyValues}</Typography>
               </Grid>
               <Grid item xs={6}>
                 <Button
@@ -421,7 +396,7 @@ const SideDownloads = (props) => {
                   className={classes.button}
                   onClick={handleDailyDownload}
                 >
-                  Descargar
+                  {strings.download}
                 </Button>
               </Grid>
             </Grid>

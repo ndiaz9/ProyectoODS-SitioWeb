@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import Map from "./components/map";
-import SideContent from "./components/sidecontent";
+import SideContent from "./components/sideContent/sidecontent";
 import InfoCard from "./components/infocard";
-import GenerationForm from "./components/generationform";
+import GenerationForm from "./components/generation/generationform";
 
 function App() {
   const [selectedCoord, setSelectedCoord] = useState([0, 0]);
   const [year, setYear] = useState(2019);
   const [variable, setVariable] = useState("GHI");
+  const [variableLimits, setvariableLimits] = useState([0, 0]);
   const [content, setContent] = useState(0);
   const [reloadMap, setReloadMap] = useState(false);
 
@@ -21,6 +22,10 @@ function App() {
 
   const handleVariableChange = (variable) => {
     setVariable(variable);
+  };
+
+  const handleVariableLimitsChange = (variableLimits) => {
+    setvariableLimits(variableLimits);
   };
 
   const handleContentChange = (content) => {
@@ -43,6 +48,7 @@ function App() {
         onCoordChange={handleCoordChange}
         year={year}
         variable={variable}
+        variableLimits={variableLimits}
         content={content}
         reloadMap={reloadMap}
         onYearChange={handleYearChange}
@@ -55,9 +61,11 @@ function App() {
         onCoordChange={handleCoordChange}
         year={year}
         variable={variable}
+        variableLimits={variableLimits}
         reloadMap={reloadMap}
         onYearChange={handleYearChange}
         onVariableChange={handleVariableChange}
+        onVariableLimitsChange={handleVariableLimitsChange}
       />
     </div>
   );

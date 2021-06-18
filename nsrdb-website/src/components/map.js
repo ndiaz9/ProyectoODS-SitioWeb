@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import mapboxgl from "mapbox-gl";
 import axios from "axios";
-import commons from "../commons";
+import constants from "../utils/constants";
 
 // eslint-disable-next-line import/no-webpack-loader-syntax
 mapboxgl.workerClass = require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
@@ -39,11 +39,12 @@ const Map = (props) => {
 
   // Initialize map when component mounts
   useEffect(() => {
-    axios.get(commons.backendURL + "/api/map/" + year).then((result) => {
+    axios.get(constants.backendURL + "/api/map/" + year).then((result) => {
       if (result.data.length === 0) {
         console.log("Error retrieving map data");
       } else {
         const data = result.data[0];
+        props.onVariableLimitsChange(data[variable]);
         const map = new mapboxgl.Map({
           container: mapContainerRef.current,
           style: "mapbox://styles/mapbox/outdoors-v11",
@@ -85,126 +86,34 @@ const Map = (props) => {
                   "interpolate",
                   ["linear"],
                   ["zoom"],
-                  1,
-                  ["interpolate", ["linear"], ["get", "mag"], 1, 1, 6, 4],
-                  16,
-                  ["interpolate", ["linear"], ["get", "mag"], 1, 5, 6, 50],
+                  4.75,
+                  3,
+                  12,
+                  15,
                 ],
                 // Color circle by earthquake magnitude
                 "circle-color": [
                   "interpolate",
                   ["linear"],
-                  ["get", "mag"],
-                  1,
-                  "rgba(33,102,172,0)",
-                  2,
-                  "rgb(103,169,207)",
-                  3,
-                  "rgb(209,229,240)",
-                  4,
-                  "rgb(253,219,199)",
-                  5,
-                  "rgb(239,138,98)",
-                  6,
-                  "rgb(178,24,43)",
-                ],
-                "circle-stroke-color": "white",
-                "circle-stroke-width": 1,
-                "circle-stroke-opacity": 0.1,
-                // Transition from heatmap to circle layer by zoom level
-                "circle-opacity": [
-                  "interpolate",
-                  ["linear"],
-                  ["zoom"],
-                  4.75,
-                  0,
-                  20,
-                  0.2,
-                ],
-              },
-            },
-            "waterway-label"
-          );
-
-          map.addLayer(
-            {
-              id: "heatmap",
-              type: "heatmap",
-              source: "tileset",
-              "source-layer": data["mapID"],
-              maxzoom: 20,
-              paint: {
-                "heatmap-opacity": 0.5,
-                "heatmap-weight": [
-                  "interpolate",
-                  ["linear"],
                   ["get", variable],
                   data[variable][0],
-                  1,
+                  "#0000ff",
+                  data[variable][0] +
+                    0.2 * (data[variable][1] - data[variable][0]),
+                  "#4169e1",
+                  data[variable][0] +
+                    0.4 * (data[variable][1] - data[variable][0]),
+                  "#00ffff",
+                  data[variable][0] +
+                    0.6 * (data[variable][1] - data[variable][0]),
+                  "#00ff00",
+                  data[variable][0] +
+                    0.8 * (data[variable][1] - data[variable][0]),
+                  "#ffff00",
                   data[variable][1],
-                  3,
+                  "#ff0000",
                 ],
-                "heatmap-color": [
-                  "interpolate",
-                  ["linear"],
-                  ["heatmap-density"],
-                  0,
-                  "rgba(0, 0, 255, 0)",
-                  0.4,
-                  "hsl(225, 73%, 57%)",
-                  0.54,
-                  "hsl(180, 100%, 50%)",
-                  0.68,
-                  "hsl(120, 100%, 50%)",
-                  0.83,
-                  "hsl(60, 100%, 50%)",
-                  1,
-                  "red",
-                ],
-                "heatmap-radius": [
-                  "interpolate",
-                  ["exponential", 1.96],
-                  ["zoom"],
-                  4.72,
-                  10,
-                  12,
-                  340,
-                ],
-                "heatmap-intensity": [
-                  "interpolate",
-                  ["exponential", 1],
-                  ["zoom"],
-                  4.75,
-                  0.031,
-                  5.212,
-                  0.05,
-                  5.43,
-                  0.061,
-                  5.872,
-                  0.09,
-                  6.25,
-                  0.12,
-                  6.6,
-                  0.155,
-                  7,
-                  0.195,
-                  7.25,
-                  0.22,
-                  7.7,
-                  0.27,
-                  8.1,
-                  0.315,
-                  8.35,
-                  0.34,
-                  8.9,
-                  0.38,
-                  9.3,
-                  0.43,
-                  10,
-                  0.49,
-                  12,
-                  0.56,
-                ],
+                "circle-opacity": 0.7,
               },
             },
             "waterway-label"
