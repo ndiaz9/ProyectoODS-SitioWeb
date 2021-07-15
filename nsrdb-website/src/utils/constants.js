@@ -9,7 +9,9 @@ const years = Array(yearEnd - yearStart + 1)
   .map(() => yearStart++);
 
 const months = Array.from({ length: 12 }, (item, i) => {
-  return new Date(0, i).toLocaleString(strings.code, { month: "short" }).toUpperCase();
+  return new Date(0, i)
+    .toLocaleString(strings.code, { month: "short" })
+    .toUpperCase();
 });
 
 const hours = [
@@ -78,28 +80,38 @@ const basicModelVariables = [
     value: "N",
     label: strings.numberOfPanels,
     defaultValue: 20,
+    description: strings.numberOfPanelsDescription,
   },
   {
     value: "Pmp",
     label: strings.panelMaximumPower,
     defaultValue: 455,
+    description: strings.panelMaximumPowerDescription,
   },
   {
     value: "gamma",
     label: strings.maximumTemperatureCoefficient,
     defaultValue: -0.5,
+    description: strings.maximumTemperatureCoefficientDescription,
   },
   {
     value: "beta",
     label: strings.panelInclination,
     defaultValue: 15,
+    description: strings.panelInclinationDescription,
   },
   {
     value: "n",
     label: strings.nominalEfficiency,
     defaultValue: 96,
+    description: strings.nominalEfficiencyDescription,
   },
-  { value: "PT", label: strings.operationalLosses, defaultValue: 14.08 },
+  {
+    value: "PT",
+    label: strings.operationalLosses,
+    defaultValue: 14.08,
+    description: strings.operationalLossesDescription,
+  },
 ];
 
 const advancedModelVariables = [
@@ -107,49 +119,68 @@ const advancedModelVariables = [
     value: "N",
     label: strings.numberOfPanels,
     defaultValue: 20,
+    description: strings.numberOfPanelsDescription,
   },
-  { value: "s", label: strings.numberOfCellsInSeries, defaultValue: 144 },
+  {
+    value: "s",
+    label: strings.numberOfCellsInSeries,
+    defaultValue: 144,
+    description: strings.numberOfCellsInSeriesDescription,
+  },
   {
     value: "beta",
     label: strings.arrayInclination,
     defaultValue: 15,
+    description: strings.arrayInclinationDescription,
   },
   {
     value: "iscref",
     label: strings.nominalShortCircuitCurrent,
     defaultValue: 9.41,
+    description: strings.nominalShortCircuitCurrentDescription,
   },
   {
     value: "vocref",
     label: strings.referenceOpenCircuitVoltage,
     defaultValue: 46.4,
+    description: strings.referenceOpenCircuitVoltageDescription,
   },
   {
     value: "impref",
     label: strings.referenceMaximumPowerCurrent,
     defaultValue: 8.82,
+    description: strings.referenceMaximumPowerCurrentDescription,
   },
   {
     value: "vmpref",
     label: strings.referenceMaximumPowerVoltage,
     defaultValue: 38.5,
+    description: strings.referenceMaximumPowerVoltageDescription,
   },
   {
     value: "alphaisc",
     label: strings.iscTemperatureCoefficient,
     defaultValue: 0.00005,
+    description: strings.iscTemperatureCoefficientDescription,
   },
   {
     value: "betavoc",
     label: strings.vocTemperatureCoefficient,
     defaultValue: -0.0027,
+    description: strings.vocTemperatureCoefficientDescription,
   },
   {
     value: "n",
     label: strings.nominalEfficiency,
     defaultValue: 96,
+    description: strings.nominalEfficiencyDescription,
   },
-  { value: "PT", label: strings.operationalLosses, defaultValue: 14.08 },
+  {
+    value: "PT",
+    label: strings.operationalLosses,
+    defaultValue: 14.08,
+    description: strings.operationalLossesDescription,
+  },
 ];
 
 const constants = {

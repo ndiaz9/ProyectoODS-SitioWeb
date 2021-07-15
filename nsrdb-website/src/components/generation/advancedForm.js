@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Grid,
@@ -5,7 +6,9 @@ import {
   Typography,
   TextField,
   MenuItem,
+  Popover,
 } from "@material-ui/core";
+import HelpIcon from "@material-ui/icons/Help";
 import constants from "../../utils/constants";
 import strings from "../../strings/es.json";
 import colors from "../../assets/colors/colors.json";
@@ -39,10 +42,56 @@ const useStyles = makeStyles((theme) => ({
     background: colors.buttonBackground,
     color: colors.buttonText,
   },
+  popovertext: {
+    fontSize: "12px",
+  },
+  popover: {
+    pointerEvents: "none",
+  },
+  paper: {
+    padding: theme.spacing(1),
+  },
 }));
 
 const AdvancedForm = (props) => {
   const classes = useStyles();
+  const [anchorEl, setAnchorEl] = useState({
+    setupType: null,
+    N: null,
+    s: null,
+    beta: null,
+    iscref: null,
+    vocref: null,
+    impref: null,
+    vmpref: null,
+    alphaisc: null,
+    betavoc: null,
+    n: null,
+    PT: null,
+  });
+  const handlePopover = (prop, open) => (event) => {
+    if (open) {
+      setAnchorEl({ ...anchorEl, [prop]: event.currentTarget });
+    } else {
+      setAnchorEl({ ...anchorEl, [prop]: null });
+    }
+  };
+
+  const open = {
+    setupType: Boolean(anchorEl.setupType),
+    N: Boolean(anchorEl.N),
+    s: Boolean(anchorEl.s),
+    beta: Boolean(anchorEl.beta),
+    iscref: Boolean(anchorEl.iscref),
+    vocref: Boolean(anchorEl.vocref),
+    impref: Boolean(anchorEl.impref),
+    vmpref: Boolean(anchorEl.vmpref),
+    alphaisc: Boolean(anchorEl.alphaisc),
+    betavoc: Boolean(anchorEl.betavoc),
+    n: Boolean(anchorEl.n),
+    PT: Boolean(anchorEl.PT),
+  };
+
   return (
     <div>
       <Grid item>
@@ -63,10 +112,45 @@ const AdvancedForm = (props) => {
             alignItems="center"
             className={classes.fieldContainer}
           >
-            <Grid item xs={6}>
+            <Grid item xs={5}>
               <Typography className={classes.formtext}>
                 {strings.setupType}
               </Typography>
+            </Grid>
+            <Grid item xs={1}>
+              <HelpIcon
+                fontSize="small"
+                style={{ color: colors.buttonBackground }}
+                aria-owns={
+                  open.setupType ? "mouse-over-popoversetuptype" : undefined
+                }
+                aria-haspopup="true"
+                onMouseEnter={handlePopover("setupType", true)}
+                onMouseLeave={handlePopover("setupType", false)}
+              />
+              <Popover
+                id="mouse-over-popoversetuptype"
+                className={classes.popover}
+                classes={{
+                  paper: classes.paper,
+                }}
+                open={open.setupType}
+                anchorEl={anchorEl.setupType}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "center",
+                }}
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "center",
+                }}
+                onClose={handlePopover("setupType", false)}
+                disableRestoreFocus
+              >
+                <Typography className={classes.popovertext}>
+                  {strings.setupTypeDescription}
+                </Typography>
+              </Popover>
             </Grid>
             <Grid item xs={6}>
               <TextField
@@ -94,10 +178,47 @@ const AdvancedForm = (props) => {
               className={classes.fieldContainer}
               key={"grid" + advar.value}
             >
-              <Grid item xs={6}>
+              <Grid item xs={5}>
                 <Typography className={classes.formtext}>
                   {advar.label}
                 </Typography>
+              </Grid>
+              <Grid item xs={1}>
+                <HelpIcon
+                  fontSize="small"
+                  style={{ color: colors.buttonBackground }}
+                  aria-owns={
+                    open[advar.value]
+                      ? "mouse-over-popover" + advar.value
+                      : undefined
+                  }
+                  aria-haspopup="true"
+                  onMouseEnter={handlePopover(advar.value, true)}
+                  onMouseLeave={handlePopover(advar.value, false)}
+                />
+                <Popover
+                  id={"mouse-over-popover" + advar.value}
+                  className={classes.popover}
+                  classes={{
+                    paper: classes.paper,
+                  }}
+                  open={open[advar.value]}
+                  anchorEl={anchorEl[advar.value]}
+                  anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "center",
+                  }}
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "center",
+                  }}
+                  onClose={handlePopover(advar.value, false)}
+                  disableRestoreFocus
+                >
+                  <Typography className={classes.popovertext}>
+                    {advar.description}
+                  </Typography>
+                </Popover>
               </Grid>
               <Grid item xs={6}>
                 <TextField

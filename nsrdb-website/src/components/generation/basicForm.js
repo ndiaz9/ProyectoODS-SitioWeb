@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Grid,
@@ -5,7 +6,9 @@ import {
   Typography,
   TextField,
   MenuItem,
+  Popover,
 } from "@material-ui/core";
+import HelpIcon from "@material-ui/icons/Help";
 import constants from "../../utils/constants";
 import strings from "../../strings/es.json";
 import colors from "../../assets/colors/colors.json";
@@ -31,6 +34,9 @@ const useStyles = makeStyles((theme) => ({
   formtext: {
     fontSize: "15px",
   },
+  popovertext: {
+    fontSize: "12px",
+  },
   buttonContainer: {
     textAlign: "center",
     paddingBottom: "10px",
@@ -39,10 +45,43 @@ const useStyles = makeStyles((theme) => ({
     background: colors.buttonBackground,
     color: colors.buttonText,
   },
+  popover: {
+    pointerEvents: "none",
+  },
+  paper: {
+    padding: theme.spacing(1),
+  },
 }));
 
 const BasicForm = (props) => {
   const classes = useStyles();
+  const [anchorEl, setAnchorEl] = useState({
+    setupType: null,
+    N: null,
+    Pmp: null,
+    gamma: null,
+    beta: null,
+    n: null,
+    PT: null,
+  });
+  const handlePopover = (prop, open) => (event) => {
+    if (open) {
+      setAnchorEl({ ...anchorEl, [prop]: event.currentTarget });
+    } else {
+      setAnchorEl({ ...anchorEl, [prop]: null });
+    }
+  };
+
+  const open = {
+    setupType: Boolean(anchorEl.setupType),
+    N: Boolean(anchorEl.N),
+    Pmp: Boolean(anchorEl.Pmp),
+    gamma: Boolean(anchorEl.gamma),
+    beta: Boolean(anchorEl.beta),
+    n: Boolean(anchorEl.n),
+    PT: Boolean(anchorEl.PT),
+  };
+
   return (
     <div>
       <Grid item>
@@ -63,10 +102,43 @@ const BasicForm = (props) => {
             alignItems="center"
             className={classes.fieldContainer}
           >
-            <Grid item xs={6}>
+            <Grid item xs={5}>
               <Typography className={classes.formtext}>
                 {strings.setupType}
               </Typography>
+            </Grid>
+            <Grid item xs={1}>
+              <HelpIcon
+                fontSize="small"
+                style={{ color: colors.buttonBackground }}
+                aria-owns={
+                  open.setupType ? "mouse-over-popoversetuptype" : undefined
+                }
+                aria-haspopup="true"
+                onMouseEnter={handlePopover("setupType", true)}
+                onMouseLeave={handlePopover("setupType", false)}
+              />
+              <Popover
+                id="mouse-over-popoversetuptype"
+                className={classes.popover}
+                classes={{
+                  paper: classes.paper,
+                }}
+                open={open.setupType}
+                anchorEl={anchorEl.setupType}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "center",
+                }}
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "center",
+                }}
+                onClose={handlePopover("setupType", false)}
+                disableRestoreFocus
+              >
+                <Typography className={classes.popovertext}>{strings.setupTypeDescription}</Typography>
+              </Popover>
             </Grid>
             <Grid item xs={6}>
               <TextField
@@ -94,10 +166,47 @@ const BasicForm = (props) => {
               className={classes.fieldContainer}
               key={"grid" + basicvar.value}
             >
-              <Grid item xs={6}>
+              <Grid item xs={5}>
                 <Typography className={classes.formtext}>
                   {basicvar.label}
                 </Typography>
+              </Grid>
+              <Grid item xs={1}>
+                <HelpIcon
+                  fontSize="small"
+                  style={{ color: colors.buttonBackground }}
+                  aria-owns={
+                    open[basicvar.value]
+                      ? "mouse-over-popover" + basicvar.value
+                      : undefined
+                  }
+                  aria-haspopup="true"
+                  onMouseEnter={handlePopover(basicvar.value, true)}
+                  onMouseLeave={handlePopover(basicvar.value, false)}
+                />
+                <Popover
+                  id={"mouse-over-popover" + basicvar.value}
+                  className={classes.popover}
+                  classes={{
+                    paper: classes.paper,
+                  }}
+                  open={open[basicvar.value]}
+                  anchorEl={anchorEl[basicvar.value]}
+                  anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "center",
+                  }}
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "center",
+                  }}
+                  onClose={handlePopover(basicvar.value, false)}
+                  disableRestoreFocus
+                >
+                  <Typography className={classes.popovertext}>
+                    {basicvar.description}
+                  </Typography>
+                </Popover>
               </Grid>
               <Grid item xs={6}>
                 <TextField
